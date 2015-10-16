@@ -2,6 +2,14 @@ clc;clear;close all;
 input_im = imread('../data/input_image_4.bmp');
 hsv_input = rgb2hsv(input_im);
 gray_input = hsv_input(:,:,3);
+log_gray_input = log(gray_input + 1);
+PQ = paddedsize(size(log_gray_input));
+F = fft2(log_gray_input,PQ(1),PQ(2));
+Hp = lpfilter('gaussian', PQ(1), PQ(2), 2*sig)
+Gp = Hp.*F;
+gp = real(ifft2(Gp));
+gpc = gp(1:size(log_gray_input,1), 1:size(log_gray_input,2));
+figure, imshow(gp, [ ])
 figure, imhist(gray_input,65536);
 figure, imshow(gray_input), title('1. Original Image (Grayscale)');
 % he_input = histeq(gray_input,65536);

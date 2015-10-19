@@ -1,5 +1,5 @@
 clc;clear;close all;
-input_im = imread('../data/input_image_4.bmp');
+input_im = imread('../data/input_image_.bmp');
 hsv_input = rgb2hsv(input_im);
 gray_input = hsv_input(:,:,3);
 log_gray_input = log(gray_input + 1);

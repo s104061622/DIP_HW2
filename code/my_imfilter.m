@@ -32,8 +32,6 @@ function output = my_imfilter(image, filter)
 
 [ r_im c_im ] = size(image);
 [ r_fltr c_fltr ] = size(filter);
-r_fltr
-c_fltr
 modi_im = zeros(r_im + r_fltr - 1, c_im + c_fltr - 1);
 output = zeros(r_im, c_im);
 

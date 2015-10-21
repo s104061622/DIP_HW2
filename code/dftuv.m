@@ -1,9 +1,4 @@
 function [U, V] = dftuv(M, N)
-%DFTUV Computes meshgrid frequency matrices.
-%   [U, V] = DFTUV(M, N) computes meshgrid frequency matrices U and
-%   V.  U and V are useful for computing frequency-domain filter
-%   functions that can be used with DFTFILT.  U and V are both
-%   M-by-N.
 
 %   Set up range of variables.
 u = 0:(M - 1);

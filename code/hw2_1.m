@@ -1,5 +1,5 @@
 clc;clear;close all;
-input_im = imread('../data/input_image_3.bmp');
+input_im = imread('../data/input_image_1.bmp');
 my_gray_input = my_rgb2gray(input_im);
 figure, imshow(my_gray_input), title('1. Original Image (Grayscale)');
 % figure, imhist(my_gray_input,64);
@@ -60,8 +60,8 @@ output_im = input_im;
 v = g_blurred_im / 255;
 output_im = rgb2hsv(input_im);
 output_im(:,:,3) = v;
-output_im(:,:,2) = output_im(:,:,2) * 2;
+output_im(:,:,2) = output_im(:,:,2) * 1;
 output_im = hsv2rgb(output_im);
 
 figure, imshowpair(input_im, output_im, 'montage'), title('Input Image vs. Output Image');
-imwrite(output_im, 'output_image_3.bmp');
+imwrite(output_im, 'output_image_1.bmp');

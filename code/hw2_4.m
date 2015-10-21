@@ -1,5 +1,5 @@
 clc;clear;close all;
-input_im = imread('../data/input_image_3.bmp');
+input_im = imread('../data/input_image_4.bmp');
 my_gray_input = my_rgb2gray(input_im);
 figure, imshow(my_gray_input), title('1. Original Image (Grayscale)');
 % figure, imhist(my_gray_input,64);
@@ -48,20 +48,20 @@ g_blurred_im = my_imfilter(he_input,fgauss);
 
 
 output_im = input_im;
-% for i = 1:size(my_gray_input,1)
-%     for j = 1:size(my_gray_input,2)
-%         weight(i,j,1) = g_blurred_im(i,j,1) / double(my_gray_input(i,j,1) + 1);
-%         output_im(i,j,1) = input_im(i,j,1) * weight(i,j,1);
-%         output_im(i,j,2) = input_im(i,j,2) * weight(i,j,1);
-%         output_im(i,j,3) = input_im(i,j,3) * weight(i,j,1);
-%     end
-% end
+for i = 1:size(my_gray_input,1)
+    for j = 1:size(my_gray_input,2)
+        weight(i,j,1) = g_blurred_im(i,j,1) / double(my_gray_input(i,j,1) + 1);
+        output_im(i,j,1) = input_im(i,j,1) * weight(i,j,1);
+        output_im(i,j,2) = input_im(i,j,2) * weight(i,j,1);
+        output_im(i,j,3) = input_im(i,j,3) * weight(i,j,1);
+    end
+end
 
-v = g_blurred_im / 255;
-output_im = rgb2hsv(input_im);
-output_im(:,:,3) = v;
-output_im(:,:,2) = output_im(:,:,2) * 2;
-output_im = hsv2rgb(output_im);
+% v = g_blurred_im / 255;
+% output_im = rgb2hsv(input_im);
+% output_im(:,:,3) = v;
+% output_im(:,:,2) = output_im(:,:,2) * 1.5;
+% output_im = hsv2rgb(output_im);
 
 figure, imshowpair(input_im, output_im, 'montage'), title('Input Image vs. Output Image');
-imwrite(output_im, 'output_image_3.bmp');
+imwrite(output_im, 'output_image_4.bmp');

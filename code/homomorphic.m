@@ -1,21 +1,22 @@
 clc;clear;close all;
-input_im = imread('../data/input_image_3.bmp');
+input_im = imread('../data/input_image_2.bmp');
 my_gray_input = my_rgb2gray(input_im);
 figure, imshow(my_gray_input), title('1. Original Image (Grayscale)');
-% figure, imhist(my_gray_input,64);
-% log_gray_input = log(double(my_gray_input + 1));
-% PQ = paddedsize(size(log_gray_input));
-% F = fft2(log_gray_input,PQ(1),PQ(2));
-% figure, imshow(fftshift(F), [0 1000]);
-% Hp = (1 - lpfilter('gaussian', PQ(1), PQ(2), 100)) + 5;
-% figure, imshow(fftshift(Hp), [ ]);
-% Gp = Hp.*F;
-% figure, imshow(fftshift(Gp), [0 1000]);
-% gp = real(ifft2(Gp));
-% gpc = gp(1:size(log_gray_input,1), 1:size(log_gray_input,2));
-% figure, imshow(gpc, [ ]), title('Homomorphic filter');
+figure, imhist(my_gray_input,64);
+log_gray_input = log(double(my_gray_input + 1));
+F = fft2(log_gray_input,2*size(log_gray_input,1),2*size(log_gray_input,2));
+figure, imshow(fftshift(F), [0 1000]);
+Hp = (1 - lpfilter('gaussian', 2*size(log_gray_input,1), 2*size(log_gray_input,2),1));
+figure, imshow(fftshift(Hp), [ ]);
+Gp = Hp.*F;
+figure, imshow(fftshift(Gp), [0 1000]);
+gp = real(ifft2(Gp));
+gp = exp(gp) - 1;
+gpc = gp(1:size(log_gray_input,1), 1:size(log_gray_input,2));
+figure, imhist(gpc,64);
+figure, imshow(gpc, [ ]), title('Homomorphic filter');
 
-he_input = my_histeq(uint8(my_gray_input));
+he_input = my_histeq(uint8(gpc));
 % he_input = adapthisteq(my_gray_input,'ClipLimit',0.01,'NBins',1024,'Distribution','rayleigh');
 % he_input = imadjust(gpc,[0 0.2],[ ],0.3);
 figure, imhist(he_input,64);
@@ -48,20 +49,20 @@ g_blurred_im = my_imfilter(he_input,fgauss);
 
 
 output_im = input_im;
-% for i = 1:size(my_gray_input,1)
-%     for j = 1:size(my_gray_input,2)
-%         weight(i,j,1) = g_blurred_im(i,j,1) / double(my_gray_input(i,j,1) + 1);
-%         output_im(i,j,1) = input_im(i,j,1) * weight(i,j,1);
-%         output_im(i,j,2) = input_im(i,j,2) * weight(i,j,1);
-%         output_im(i,j,3) = input_im(i,j,3) * weight(i,j,1);
-%     end
-% end
+for i = 1:size(my_gray_input,1)
+    for j = 1:size(my_gray_input,2)
+        weight(i,j,1) = he_input(i,j,1) / double(my_gray_input(i,j,1) + 1);
+        output_im(i,j,1) = input_im(i,j,1) * weight(i,j,1);
+        output_im(i,j,2) = input_im(i,j,2) * weight(i,j,1);
+        output_im(i,j,3) = input_im(i,j,3) * weight(i,j,1);
+    end
+end
 
-v = g_blurred_im / 255;
-output_im = rgb2hsv(input_im);
-output_im(:,:,3) = v;
-output_im(:,:,2) = output_im(:,:,2) * 2;
-output_im = hsv2rgb(output_im);
+
+% output_im = rgb2hsv(input_im);
+% output_im(:,:,3) = gpc(:,:) * 1;
+% output_im(:,:,2) = output_im(:,:,2) * 1;
+% output_im = hsv2rgb(output_im);
 
 figure, imshowpair(input_im, output_im, 'montage'), title('Input Image vs. Output Image');
-imwrite(output_im, 'output_image_3.bmp');
+imwrite(output_im, 'output_image.bmp');
